@@ -1,48 +1,19 @@
-<!doctype html>
-<html lang="en">
- <head>
-  <meta charset="UTF-8">
-  <meta name="Generator" content="EditPlus®">
-  <meta name="Author" content="">
-  <meta name="Keywords" content="">
-  <meta name="Description" content="">
-  <title>Aris Hu's Github Qzone</title>
-  <script type="text/javascript">
+---
+layout: main
+---
+{% for post in paginator.posts %}
+<article class="post">
+  {% if post.img %}
+    <a class="post-thumbnail" style="background-image: url({{"/assets/img/" | prepend: site.baseurl | append : post.img}})" href="{{post.url | prepend: site.baseurl}}"></a>
+  {% else %}
+  {% endif %}
+  <div class="post-content">
+    <h2 class="post-title"><a href="{{post.url | prepend: site.baseurl}}">{{post.title}}</a></h2>
+    <p>{{ post.content | strip_html | truncatewords: 15 }}</p>
+    <span class="post-date">{{post.date | date: '%Y, %b %d'}}&nbsp;&nbsp;&nbsp;—&nbsp;</span>
+    <span class="post-words">{% capture words %}{{ post.content | number_of_words }}{% endcapture %}{% unless words contains "-" %}{{ words | plus: 250 | divided_by: 250 | append: " minute read" }}{% endunless %}</span>
+  </div>
+</article>
+{% endfor %}
 
-	function browserRedirect() { 
-
-		var sUserAgent= navigator.userAgent.toLowerCase(); 
-
-		var bIsIpad= sUserAgent.match(/ipad/i) == "ipad"; 
-
-		var bIsIphoneOs= sUserAgent.match(/iphone os/i) == "iphone os"; 
-
-		var bIsMidp= sUserAgent.match(/midp/i) == "midp"; 
-
-		var bIsUc7= sUserAgent.match(/rv:1.2.3.4/i) == "rv:1.2.3.4"; 
-
-		var bIsUc= sUserAgent.match(/ucweb/i) == "ucweb"; 
-
-		var bIsAndroid= sUserAgent.match(/android/i) == "android"; 
-
-		var bIsCE= sUserAgent.match(/windows ce/i) == "windows ce"; 
-
-		var bIsWM= sUserAgent.match(/windows mobile/i) == "windows mobile"; 
-
-		 
-
-		if (bIsIpad || bIsIphoneOs || bIsMidp || bIsUc7 || bIsUc || bIsAndroid || bIsCE || bIsWM) { 
-			window.location.href= '/web/index.html'; 
-		} else {
-			window.location= '/web/index.html'; 
-		} 
-	} 
-
-	browserRedirect(); 
-
- </script>
- </head>
- <body>
-	<h1>It works</h1>
- </body>
-</html>
+{% include pagination.html %}
