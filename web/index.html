@@ -1,166 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="utf-8">
-	<title>Hello, world! I'm Aris Hu</title>
-
-  <!-- Edit site and author settings in `_config.yml` to make the social details your own -->
-
-    <meta content="Hello, world! I'm Aris Hu" property="og:site_name">
-  
-    <meta content="Hello, world! I'm Aris Hu" property="og:title">
-  
-  
-    <meta content="website" property="og:type">
-  
-  
-    <meta content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-" property="og:description">
-  
-  
-    <meta content="http://localhost:4000/" property="og:url">
-  
-  
-  
-    <meta content="/img/Aris-Hu.png" property="og:image">
-  
-  
-  
-
-  
-    <meta name="twitter:card" content="">
-  
-    <meta name="twitter:site" content="@">
-    <meta name="twitter:creator" content="@">
-  
-    <meta name="twitter:title" content="Hello, world! I'm Aris Hu">
-  
-  
-    <meta name="twitter:url" content="http://localhost:4000/">
-  
-  
-    <meta name="twitter:description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-">
-  
-  
-    <meta name="twitter:image:src" content="http://localhost:4000/assets/img/Aris-Hu.png">
-  
-
-	<meta name="description" content="">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-	<meta property="og:image" content="">
-	<link rel="shortcut icon" href="/assets/img/favicon/favicon.ico" type="image/x-icon">
-	<link rel="apple-touch-icon" href="/assets/img/favicon/apple-touch-icon.png">
-	<link rel="apple-touch-icon" sizes="72x72" href="/assets/img/favicon/apple-touch-icon-72x72.png">
-	<link rel="apple-touch-icon" sizes="114x114" href="/assets/img/favicon/apple-touch-icon-114x114.png">
-	<!-- Chrome, Firefox OS and Opera -->
-	<meta name="theme-color" content="#263959">
-	<!-- Windows Phone -->
-	<meta name="msapplication-navbutton-color" content="#263959">
-	<!-- iOS Safari -->
-	<meta name="apple-mobile-web-app-status-bar-style" content="#263959">
-	<!-- Google Fonts -->
-	<link href="https://fonts.googleapis.com/css?family=PT+Serif:400,700" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
-	<!-- Font Awesome -->
-	<link rel="stylesheet" href="/assets/fonts/font-awesome/css/font-awesome.min.css">
-	<!-- Styles -->
-	<link rel="stylesheet" href="/assets/css/main.css">
-</head>
-
-<body>
-
-  <div class="wrapper">
-    <aside class="sidebar">
-  <header>
-    <div class="about">
-      <div class="cover-author-image">
-        <a href="/"><img src="/assets/img/Aris-Hu.png" alt="Aris Hu"></a>
-      </div>
-      <div class="author-name">Aris Hu</div>
-      <p></p>
-    </div>
-  </header> <!-- End Header -->
-  <footer>
-    <section class="contact">
-      <h3 class="contact-title">Contact me</h3>
-      <ul>
-		<!--
-        
-          <li><a href="https://twitter.com/artemsheludko_" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
-        
-        
-          <li><a href="https://facebook.com/" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
-        
-		-->
-        
-          <li class="github"><a href="http://github.com/hytc1106hwc" target="_blank"><i class="fa fa-github"></i></a></li>
-        
-        
-          <li class="linkedin"><a href="https://in.linkedin.com/in/huwencheng" target="_blank"><i class="fa fa-linkedin"></i></a></li>
-        
-        
-		
-          <li class="email"><a href="mailto:1729116521@qq.com"><i class="fa fa-envelope-o"></i></a></li>
-        
-      </ul>
-    </section> <!-- End Section Contact -->
-    <div class="copyright">
-      <p>2018 &copy; Aris Hu</p>
-    </div>
-  </footer> <!-- End Footer -->
-</aside> <!-- End Sidebar -->
-<div class="content-box clearfix">
-  
+---
+layout: main
+---
+{% for post in paginator.posts %}
 <article class="post">
-  
-  
+  {% if post.img %}
+    <a class="post-thumbnail" style="background-image: url({{"/assets/img/" | prepend: site.baseurl | append : post.img}})" href="{{post.url | prepend: site.baseurl}}"></a>
+  {% else %}
+  {% endif %}
   <div class="post-content">
-    <h2 class="post-title"><a href="/lua/how-to-write-c-functions/string-operations/">字符串操作-编写C函数技术(二)</a></h2>
-    <p>规则 当C函数接受Lua中的字符串作为参数时，需要遵循两条规则： 1.使用字符串的时候，不需要将字符串弹出栈 2.不能修改字符串内容 字符串操作函数 字符串抽取——lua_pushlstring函数 要向栈中压入字符串s从i到j(包含)的子字符串，可以使用下面语句: lua_pushlstring(L, s+i, j-i+1) 例子 MYCLIBS_API int myclibs_split(lua_State *L)...</p>
-    <span class="post-date">2018, Jan 27&nbsp;&nbsp;&nbsp;—&nbsp;</span>
-    <span class="post-words">4 minute read</span>
+    <h2 class="post-title"><a href="{{post.url | prepend: site.baseurl}}">{{post.title}}</a></h2>
+    <p>{{ post.content | strip_html | truncatewords: 15 }}</p>
+    <span class="post-date">{{post.date | date: '%Y, %b %d'}}&nbsp;&nbsp;&nbsp;—&nbsp;</span>
+    <span class="post-words">{% capture words %}{{ post.content | number_of_words }}{% endcapture %}{% unless words contains "-" %}{{ words | plus: 250 | divided_by: 250 | append: " minute read" }}{% endunless %}</span>
   </div>
 </article>
+{% endfor %}
 
-<article class="post">
-  
-  
-  <div class="post-content">
-    <h2 class="post-title"><a href="/lua/how-to-write-c-functions/array-operations/">数组操作-编写C函数技术(一)</a></h2>
-    <p>lua中的数组，仅仅是一个以特殊方式使用的table。 可以使用操作table的方法lua_settable和lua_gettable来操作数组。但是也可以使用下面的方法来访问和更新数组中的元素值。 void lua_seti(lua_State *L, int index, int key) void lua_geti(lua_State *L, int index, int...</p>
-    <span class="post-date">2018, Jan 27&nbsp;&nbsp;&nbsp;—&nbsp;</span>
-    <span class="post-words">1 minute read</span>
-  </div>
-</article>
-
-
-<div class="container">
-  <nav class="pagination" role="pagination">
-    <ul>
-      
-
-      <p><span class="page-number">Page 1 of 1</span></p>
-
-      
-    </ul>
-  </nav>
-</div>
-
-
-</div>
-
-  </div>
-  
-  <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-  ga('create', '', 'auto');
-  ga('send', 'pageview');
-</script> <!-- End Analytics -->
-
-</body>
-</html>
+{% include pagination.html %}
