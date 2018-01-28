@@ -1,6 +1,7 @@
 ---
 layout:     post
 title:      字符串操作-编写C函数技术(二)
+desc:       在C函数中怎样把字符串压入到栈中
 date:       2018-01-27
 permalink:  /lua/how-to-write-c-functions/string-operations/
 tags:       [lua, how-to-write-c-functions]

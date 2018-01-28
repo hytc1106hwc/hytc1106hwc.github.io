@@ -38,6 +38,24 @@
   padding-bottom: 30px;
   margin: 30px 0  ;
   border-bottom: 1px solid $dark-gray;
+  .weixin-container {
+    float: left;
+    position: relative;
+    display: none;
+    z-index: 10;
+    box-shadow: 0 0 5px 2px #f1f1f1;
+    .weixin-qrcode {
+      float: left;
+      width: 129px;
+      .weixin-qrcode-title {
+        display: none;
+        text-align: center;
+        color: #727272;
+        font-size: 12px;
+      }
+    }
+  }
+  
   .page-share {
     margin-bottom: 10px;
     text-align: left;
