@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>字符串操作-编写C函数技术(二) - Hello, world! I'm Aris Hu</title>
+
+  <!-- Edit site and author settings in `_config.yml` to make the social details your own -->
+
+    <meta content="Hello, world! I'm Aris Hu" property="og:site_name">
+  
+    <meta content="字符串操作-编写C函数技术(二)" property="og:title">
+  
+  
+    <meta content="article" property="og:type">
+  
+  
+    <meta content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+" property="og:description">
+  
+  
+    <meta content="http://localhost:4000/lua/how-to-write-c-functions/string-operations/" property="og:url">
+  
+  
+    <meta content="2018-01-27T00:00:00+08:00" property="article:published_time">
+    <meta content="http://localhost:4000/about/" property="article:author">
+  
+  
+    <meta content="/img/Aris-Hu.png" property="og:image">
+  
+  
+    
+  
+  
+    
+    <meta content="lua" property="article:tag">
+    
+    <meta content="how-to-write-c-functions" property="article:tag">
+    
+  
+
+  
+    <meta name="twitter:card" content="">
+  
+    <meta name="twitter:site" content="@">
+    <meta name="twitter:creator" content="@">
+  
+    <meta name="twitter:title" content="字符串操作-编写C函数技术(二)">
+  
+  
+    <meta name="twitter:url" content="http://localhost:4000/lua/how-to-write-c-functions/string-operations/">
+  
+  
+    <meta name="twitter:description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+">
+  
+  
+    <meta name="twitter:image:src" content="http://localhost:4000/assets/img/Aris-Hu.png">
+  
+
+	<meta name="description" content="">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta property="og:image" content="">
+	<link rel="shortcut icon" href="/assets/img/favicon/favicon.ico" type="image/x-icon">
+	<link rel="apple-touch-icon" href="/assets/img/favicon/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="/assets/img/favicon/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="/assets/img/favicon/apple-touch-icon-114x114.png">
+	<!-- Chrome, Firefox OS and Opera -->
+	<meta name="theme-color" content="#263959">
+	<!-- Windows Phone -->
+	<meta name="msapplication-navbutton-color" content="#263959">
+	<!-- iOS Safari -->
+	<meta name="apple-mobile-web-app-status-bar-style" content="#263959">
+	<!-- Google Fonts -->
+	<link href="https://fonts.googleapis.com/css?family=PT+Serif:400,700" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700" rel="stylesheet">
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="/assets/fonts/font-awesome/css/font-awesome.min.css">
+	<!-- Styles -->
+	<link rel="stylesheet" href="/assets/css/main.css">
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <aside class="sidebar">
+  <header>
+    <div class="about">
+      <div class="cover-author-image">
+        <a href="/"><img src="/assets/img/Aris-Hu.png" alt="Aris Hu"></a>
+      </div>
+      <div class="author-name">Aris Hu</div>
+      <p></p>
+    </div>
+  </header> <!-- End Header -->
+  <footer>
+    <section class="contact">
+      <h3 class="contact-title">Contact me</h3>
+      <ul>
+		<!--
+        
+          <li><a href="https://twitter.com/artemsheludko_" target="_blank"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+        
+        
+          <li><a href="https://facebook.com/" target="_blank"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+        
+		-->
+        
+          <li class="github"><a href="http://github.com/hytc1106hwc" target="_blank"><i class="fa fa-github"></i></a></li>
+        
+        
+          <li class="linkedin"><a href="https://in.linkedin.com/in/huwencheng" target="_blank"><i class="fa fa-linkedin"></i></a></li>
+        
+        
+		
+          <li class="email"><a href="mailto:1729116521@qq.com"><i class="fa fa-envelope-o"></i></a></li>
+        
+      </ul>
+    </section> <!-- End Section Contact -->
+    <div class="copyright">
+      <p>2018 &copy; Aris Hu</p>
+    </div>
+  </footer> <!-- End Footer -->
+</aside> <!-- End Sidebar -->
+<div class="content-box clearfix">
+  <article class="article-page">
+  <div class="page-content">
+    
+    
+    <div class="wrap-content">
+      <header class="header-page">
+        <h1 class="page-title">字符串操作-编写C函数技术(二)</h1>
+        <div class="page-date"><span>2018, Jan 27&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+      </header>
+      <h2 id="规则">规则</h2>
+<p>当C函数接受Lua中的字符串作为参数时，需要遵循两条规则：</p>
+
+<p><strong>1.使用字符串的时候，不需要将字符串弹出栈</strong></p>
+
+<p><strong>2.不能修改字符串内容</strong></p>
+
+<h2 id="字符串操作函数">字符串操作函数</h2>
+
+<h3 id="字符串抽取lua_pushlstring函数">字符串抽取——lua_pushlstring函数</h3>
+<p>要向栈中压入字符串s从i到j(包含)的子字符串，可以使用下面语句:</p>
+
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code>    <span class="n">lua_pushlstring</span><span class="p">(</span><span class="no">L</span><span class="p">,</span> <span class="n">s</span><span class="o">+</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="o">-</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<p><strong>例子</strong></p>
+
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="no">MYCLIBS_API</span> <span class="n">int</span> <span class="n">myclibs_split</span><span class="p">(</span><span class="n">lua_State</span> <span class="o">*</span><span class="no">L</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">s</span> <span class="o">=</span> <span class="n">luaL_checkstring</span><span class="p">(</span><span class="no">L</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>       <span class="sr">/* original string */</span>
+  <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">sep</span> <span class="o">=</span> <span class="n">luaL_checkstring</span><span class="p">(</span><span class="no">L</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>     <span class="sr">/* seperator */</span>
+  <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">e</span><span class="p">;</span>
+
+  <span class="n">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="n">lua_newtable</span><span class="p">(</span><span class="no">L</span><span class="p">);</span>  <span class="sr">/* result table */</span>
+  <span class="k">while</span> <span class="p">((</span><span class="n">e</span> <span class="o">=</span> <span class="n">strchr</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="o">*</span><span class="n">sep</span><span class="p">))</span> <span class="o">!=</span> <span class="no">NULL</span><span class="p">)</span>
+  <span class="p">{</span>
+        <span class="n">lua_pushlstring</span><span class="p">(</span><span class="no">L</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="o">-</span> <span class="n">s</span><span class="p">);</span>
+        <span class="n">lua_rawseti</span><span class="p">(</span><span class="no">L</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="o">++</span><span class="p">);</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">e</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="n">lua_pushstring</span><span class="p">(</span><span class="no">L</span><span class="p">,</span> <span class="n">s</span><span class="p">);</span>
+  <span class="n">lua_rawseti</span><span class="p">(</span><span class="no">L</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="sr">/*
+ * will print
+ *    1  hello
+ *    2  world
+ */</span>
+<span class="n">local</span> <span class="n">split_result</span> <span class="o">=</span> <span class="n">myclibs</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s2">"hello world"</span><span class="p">,</span> <span class="s2">" "</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="k">in</span> <span class="n">ipairs</span><span class="p">(</span><span class="n">split_result</span><span class="p">)</span> <span class="k">do</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<blockquote>
+  <p><strong>说明</strong>
+这是字符串分割函数。
+strchr(const char *str,  int c)
+在str指针所指向的不可变字符串中查找第一个与c相匹配的
+函数返回第一个匹配项的指针，如果找不到匹配项，返回NULL。</p>
+</blockquote>
+
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="no">MYCLIBS_API</span> <span class="n">int</span> <span class="n">myclibs_split2</span><span class="p">(</span><span class="n">lua_State</span> <span class="o">*</span><span class="no">L</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">s</span> <span class="o">=</span> <span class="n">luaL_checkstring</span><span class="p">(</span><span class="no">L</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">sep</span> <span class="o">=</span> <span class="n">luaL_checkstring</span><span class="p">(</span><span class="no">L</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+
+  <span class="n">lua_newtable</span><span class="p">(</span><span class="no">L</span><span class="p">);</span>                 <span class="sr">/* create a table for stroing results */</span>
+
+  <span class="n">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">len</span> <span class="o">=</span> <span class="p">(</span><span class="n">size_t</span><span class="p">)</span><span class="n">luaL_len</span><span class="p">(</span><span class="no">L</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+  <span class="sr">//</span><span class="nb">printf</span><span class="p">(</span><span class="s2">"**%d</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">sep</span><span class="p">);</span>
+  <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">e</span><span class="p">;</span>
+  <span class="k">while</span> <span class="p">((</span><span class="n">e</span> <span class="o">=</span> <span class="p">(</span><span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="p">)</span><span class="n">memchr</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="o">*</span><span class="n">sep</span><span class="p">,</span> <span class="n">len</span><span class="p">))</span> <span class="o">!=</span> <span class="no">NULL</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="n">lua_pushlstring</span><span class="p">(</span><span class="no">L</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="o">-</span> <span class="n">s</span><span class="p">);</span>  <span class="sr">/* push substring */</span>
+    <span class="n">lua_rawseti</span><span class="p">(</span><span class="no">L</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">i</span><span class="o">++</span><span class="p">);</span>        <span class="sr">/* insert it into the result table */</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">e</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>                     <span class="sr">/* skip seperator */</span>
+  <span class="p">}</span>
+
+  <span class="sr">/* insert last string */</span>
+  <span class="n">lua_pushstring</span><span class="p">(</span><span class="no">L</span><span class="p">,</span> <span class="n">s</span><span class="p">);</span>
+  <span class="n">lua_rawseti</span><span class="p">(</span><span class="no">L</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>  <span class="sr">//</span> <span class="n">retunrn</span> <span class="n">the</span> <span class="n">table</span>
+<span class="p">}</span>
+
+<span class="sr">/*
+ * will print
+ *    1  hello
+ *    2  world
+ */</span>
+<span class="n">local</span> <span class="n">split_result</span> <span class="o">=</span> <span class="n">myclibs</span><span class="p">.</span><span class="nf">split2</span><span class="p">(</span><span class="s2">"hello world"</span><span class="p">,</span> <span class="s2">" "</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="k">in</span> <span class="n">ipairs</span><span class="p">(</span><span class="n">split_result</span><span class="p">)</span> <span class="k">do</span>
+  <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<blockquote>
+  <p>说明</p>
+</blockquote>
+
+<blockquote>
+  <p>这是第二种形式的字符串截取函数在这里使用了memchr函数memchr(const void* buf, int val, size_t maxcount)
+功能：在buf中的前maxcount字节中查找val的第一个匹配项
+参数说明：
+    buf:  指向缓冲区的指针
+    val:   要查找的字符
+    maxcount: 要检查的字符数</p>
+</blockquote>
+
+<h3 id="字符串拼接lua_concat函数">字符串拼接——lua_concat函数</h3>
+
+<p>要连接字符串，lua提供了lua_concat函数，它与..操作符相同，会将数字转成字符串，并在有必要的时候，调用元表方法。</p>
+
+<p>lua_concat(L, n): 该函数将栈中从栈顶开始的n个元素弹出，并连接起来，并将连接后的结果放在栈顶。</p>
+
+<p><strong>lua_pushfstring()函数</strong></p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code>    <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">lua_pushfstring</span><span class="p">(</span><span class="n">lua_State</span> <span class="o">*</span><span class="no">L</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">fmt</span><span class="p">,</span> <span class="err">…</span><span class="p">);</span>
+</code></pre>
+</div>
+
+<blockquote>
+  <p>说明</p>
+</blockquote>
+
+<blockquote>
+  <p>这个函数与C中的sprintf函数类似，但是不需要提供buffer。Lua动态按需要创建字符串。
+函数将结果字符串压入栈，并返回一个指向这个元素的指针。
+格式字符串列表，<strong>格式控制符不接受任何修饰，包括宽度和精度</strong>。</p>
+</blockquote>
+
+<p><img src="http://localhost:4000/assets/lua/how-to-write-c-functions/format-symbol.png" alt="格式字符串列表" /></p>
+
+<h4 id="大批量字符串拼接string-buffer"><strong>大批量字符串拼接————“String Buffer”</strong></h4>
+<p>Lua辅助库中提供的buffer资源，提供了两个函数：
+  一个函数用来获取一个任意大小的buffer，通过这个buffer可以来拼接字符串；
+另一个函数将buffer中的内容转换成Lua字符串。
+使用buffer的步骤：</p>
+
+<ol>
+  <li>声明一个luaL_Buffer变量</li>
+  <li>使用luaL_bufferinitsize获取一个指向指定大小的buffer的指针</li>
+  <li>向buffer中添加内容</li>
+  <li>使用luaL_pushresultsize将buffer中的内容转换成Lua字符串，并压入栈中</li>
+</ol>
+
+<blockquote>
+  <p>说明</p>
+</blockquote>
+
+<blockquote>
+  <p>1.<strong>如果事先不确定buffer的大小</strong>，</p>
+</blockquote>
+
+<blockquote>
+  <p>在初始化buffer的时候，应该使用<strong>luaL_buffinit</strong>函数</p>
+</blockquote>
+
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code>    <span class="n">void</span> <span class="n">luaL_buffinit</span><span class="p">(</span><span class="n">lua_State</span> <span class="o">*</span><span class="no">L</span><span class="p">,</span> <span class="n">luaL_Buffer</span> <span class="o">*</span><span class="no">B</span><span class="p">);</span>
+</code></pre>
+</div>
+
+<blockquote>
+  <p>在最后转换的时候，使用<strong>luaL_pushresult</strong>函数</p>
+</blockquote>
+
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code>    <span class="n">void</span> <span class="n">luaL_pushresult</span><span class="p">(</span><span class="n">luaL_Buffer</span> <span class="o">*</span><span class="no">B</span><span class="p">);</span>
+</code></pre>
+</div>
+
+<blockquote>
+  <p>2.可以<strong>逐个地往buffer中添加内容</strong>，使用下列函数：</p>
+  <div class="language-ruby highlighter-rouge"><pre class="highlight"><code>    <span class="n">void</span> <span class="n">luaL_addvalue</span><span class="p">(</span><span class="n">luaL_Buffer</span> <span class="o">*</span><span class="no">B</span><span class="p">);</span>
+    <span class="n">void</span> <span class="n">luaL_addlstring</span><span class="p">(</span><span class="n">luaL_Buffer</span> <span class="o">*</span><span class="no">B</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">l</span><span class="p">);</span>
+    <span class="n">void</span> <span class="n">luaL_addstring</span><span class="p">(</span><span class="n">luaL_Buffer</span> <span class="o">*</span><span class="no">B</span><span class="p">,</span> <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">s</span><span class="p">);</span>
+    <span class="n">void</span> <span class="n">luaL_addchar</span><span class="p">(</span><span class="n">luaL_Buffer</span> <span class="o">*</span><span class="no">B</span><span class="p">,</span> <span class="n">char</span> <span class="n">c</span><span class="p">);</span>
+</code></pre>
+  </div>
+</blockquote>
+
+<p><strong>例子</strong></p>
+<div class="language-ruby highlighter-rouge"><pre class="highlight"><code><span class="sr">/* changer each char of a string to its upper case */</span>
+<span class="no">MYCLIBS_API</span> <span class="n">int</span> <span class="n">myclibs_upper</span><span class="p">(</span><span class="n">lua_State</span> <span class="o">*</span><span class="no">L</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">size_t</span> <span class="n">len</span><span class="p">;</span>
+  <span class="n">size_t</span> <span class="n">i</span><span class="p">;</span>
+
+  <span class="sr">/* first, declare a luaL_Buffer variable */</span>
+  <span class="n">luaL_Buffer</span> <span class="n">b</span><span class="p">;</span>
+  <span class="n">const</span> <span class="n">char</span> <span class="o">*</span><span class="n">s</span> <span class="o">=</span> <span class="n">luaL_checklstring</span><span class="p">(</span><span class="no">L</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">len</span><span class="p">);</span>
+
+  <span class="sr">/* second, get a pointer for the buffer with the given size */</span>
+  <span class="n">char</span> <span class="o">*</span><span class="nb">p</span> <span class="o">=</span> <span class="n">luaL_buffinitsize</span><span class="p">(</span><span class="no">L</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">b</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+
+  <span class="sr">/* then, create our string using the buffer */</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">len</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="nb">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">toupper</span><span class="p">(</span><span class="no">UCHAR</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]));</span>
+  <span class="p">}</span>
+
+  <span class="sr">/*
+   * last, convert the buffer contents into a Lua string,
+   * and push that string onto the stack
+   */</span>
+  <span class="n">luaL_pushresultsize</span><span class="p">(</span><span class="o">&amp;</span><span class="n">b</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre>
+</div>
+
+      <div class="page-footer">
+        <div class="page-share">
+          <a href="https://twitter.com/intent/tweet?text=字符串操作-编写C函数技术(二)&url=http://localhost:4000/lua/how-to-write-c-functions/string-operations/" title="Share on Twitter" rel="nofollow" target="_blank">Twitter</a>
+          <a href="https://facebook.com/sharer.php?u=http://localhost:4000/lua/how-to-write-c-functions/string-operations/" title="Share on Facebook" rel="nofollow" target="_blank">Facebook</a>
+          <a href="https://plus.google.com/share?url=http://localhost:4000/lua/how-to-write-c-functions/string-operations/" title="Share on Google+" rel="nofollow" target="_blank">Google+</a>
+        </div>
+        <div class="page-tag">
+          
+            <a href="/tags#lua" class="tag">&#35; lua</a>
+          
+            <a href="/tags#how-to-write-c-functions" class="tag">&#35; how-to-write-c-functions</a>
+          
+        </div>
+      </div>
+      <section class="comment-area">
+  <div class="comment-wrapper">
+    
+    <div id="disqus_thread" class="article-comments"></div>
+    <script>
+      (function() {
+          var d = document, s = d.createElement('script');
+          s.src = '//mr-brown.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    
+  </div>
+</section> <!-- End Comment Area -->
+
+    </div> <!-- End Wrap Content -->
+  </div> <!-- End Page Content -->
+</article> <!-- End Article Page -->
+
+</div>
+
+  </div>
+  
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', '', 'auto');
+  ga('send', 'pageview');
+</script> <!-- End Analytics -->
+
+</body>
+</html>
