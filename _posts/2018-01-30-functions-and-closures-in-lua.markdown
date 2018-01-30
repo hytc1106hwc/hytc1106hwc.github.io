@@ -3,8 +3,8 @@ layout:		post
 title:		Lua中的函数和闭包
 desc:		Lua中的函数与闭包的实现机制
 date:		2018-01-30
-pemalink:	/lua/how-to-write-c-functions/functions-and-closures-in-lua
-tags:		[lua]
+pemalink:	/lua/how-to-write-c-functions/functions-and-closures-in-lua/
+tags:		[lua, techniques]
 ---
 
 当Lua**编译一个函数的时候，会产生一个prototype**，这个prototype包含了这个函数的**虚拟机器指令**、**常量值**和**一些调试信息**。
