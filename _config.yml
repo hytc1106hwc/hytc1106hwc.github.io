@@ -1,5 +1,5 @@
-title: Aris Hu
-description: > 感谢所有帮助我的人，是你们让我认真地走好每一步。 # this means to ignore newlines until "baseurl:"
+title: ArisHu
+description: # this means to ignore newlines until "baseurl:"
   Write an awesome description for your new site here. You can edit this
   line in _config.yml. It will appear in your document head meta (for
   Google search results) and in your feed.xml site description.
@@ -9,10 +9,11 @@ baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://hytc1106hwc.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 site-twitter: #if your site has a twitter account, enter it here
 
+
 # Author Settings
 author: Aris Hu # add your name
 author-img: Aris-Hu.png # add your photo
-about-author:  # add description
+about-author: 感谢所有帮助我的人 # add description
 #twitter: "" # add your Twitter handle
 #facebook: "" # add your Facebook handle
 github: hytc1106hwc # add your Github handle
